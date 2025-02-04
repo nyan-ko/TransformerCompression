@@ -224,7 +224,7 @@ class LlamaModelAdapter(ModelAdapter):
         local_files_only: bool = False,
         token: str | bool | None = None,
     ) -> ModelAdapter | None:
-        if not (model_name.startswith("meta-llama/Llama-2") or model_name.startswith("meta-llama/Meta-Llama-3")):
+        if not (model_name.startswith("meta-llama/Llama-2") or model_name.startswith("meta-llama/Meta-Llama-3") or model_name.startswith("meta-llama/Llama-3.2-1B")):
             return None
 
         model = LlamaForCausalLM.from_pretrained(
@@ -244,7 +244,7 @@ class LlamaModelAdapter(ModelAdapter):
         local_files_only: bool = False,
         token: str | bool | None = None,
     ) -> ModelAdapter | None:
-        if not (model_name.startswith("meta-llama/Llama-2") or model_name.startswith("meta-llama/Meta-Llama-3")):
+        if not (model_name.startswith("meta-llama/Llama-2") or model_name.startswith("meta-llama/Meta-Llama-3") or model_name.startswith("meta-llama/Llama-3.2-1B")):
             return None
 
         class UninitializedLlamaForCausalLM(LlamaForCausalLM):
