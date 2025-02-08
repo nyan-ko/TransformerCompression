@@ -11,8 +11,8 @@ from evaluation_hook import ForwardHook
 # normal_hook = ForwardHook(normal_model)
 # normal_model.eval()
 
-sliced_model = llama.LlamaForCausalLM(llama.LlamaConfig())
-sliced_model.load_state_dict(torch.load("/home/edrliu/projects/def-mmehride/edrliu/TransformerCompression2/out/Llama-2-7b-hf_0.25.pt"))
+# sliced_model = llama.LlamaForCausalLM(llama.LlamaConfig())
+sliced_model = torch.load("/home/edrliu/projects/def-mmehride/edrliu/TransformerCompression2/out/Llama-2-7b-hf_0.25.pt")
 sliced_hook = ForwardHook(sliced_model)
 sliced_model.eval()
 
@@ -26,8 +26,7 @@ with torch.no_grad():
     # normal_model(**inputs)
     sliced_model(**inputs)
 
-for sliced_out in sliced_hook.out:
-    print(f"sliced: {sliced_out}")
+torch.save(sliced_hook, "hook_output.pt")
 
 sliced_hook.close()
 
