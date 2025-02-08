@@ -7,12 +7,12 @@ from datasets import load_dataset
 from evaluation_hook import ForwardHook
 
 normal_model = llama.LlamaForCausalLM(llama.LlamaConfig())
-normal_model.from_pretrained("llama")
+normal_model.from_pretrained("meta-llama/Llama-2-7b-hf")
 normal_hook = ForwardHook(normal_model)
 normal_model.eval()
 
 sliced_model = llama.LlamaForCausalLM(llama.LlamaConfig())
-sliced_model.load_state_dict(torch.load("out.pth"))
+sliced_model.load_state_dict(torch.load("/home/edrliu/projects/def-mmehride/edrliu/TransformerCompression2/out/Llama-2-7b-hf_0.25.pt"))
 sliced_hook = ForwardHook(sliced_model)
 sliced_model.eval()
 
