@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader
 import transformers.models.llama.modeling_llama as llama
 from transformers import LlamaTokenizer
 from datasets import load_dataset
@@ -10,18 +11,32 @@ from evaluation_hook import ForwardHook
 
 import sys
 
-wiki = load_dataset("wikipedia", "20220301.en")
+wiki = load_dataset("wikipedia", "20220301.en", split="test")
 
 tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
 tokenizer.pad_token = tokenizer.eos_token
-inputs = tokenizer(wiki["text"], return_tensors="pt", padding=True, truncation=True).to("cuda")
+
+def tokenize_function(example):
+    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=512)
+
+tokenized_dataset = wiki.map(tokenize_function, batched=True)
+tokenized_dataset.set_format(type="torch", columns=["input_ids", "attention_mask"])
+
+loader = DataLoader(tokenized_dataset, batch_size=8)
+
+device = torch.device("cuda")
 
 model_adapter, _ = load_sliced_model("meta-llama/Llama-2-7b-hf", sys.argv[1], sparsity=sys.argv[2], token=sys.argv[3])
-sliced_hook = ForwardHook(model_adapter.model)
+model = model_adapter.model.to(device)
+sliced_hook = ForwardHook(model)
+model.eval()
 
-with torch.no_grad():
-    model_adapter.model(**inputs)
+for batch in loader:
+    input_ids = batch["input_ids"].to(device)
+    attention_mask = batch["attention_mask"].to(device)
+
+    with torch.no_grad():
+        model(input_ids, attention_mask=attention_mask)
 
 torch.save(sliced_hook, "hook_output.pt")
-
 sliced_hook.close()
