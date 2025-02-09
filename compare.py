@@ -24,8 +24,8 @@ out = []
 batch = 8
 for i in range(n):
     for j in range(batch):
-        error = linalg.matrix_norm(normal_output[i][j] - sliced_output[i][j])
-        rel_err = error / linalg.matrix_norm(normal_output[i][j])
+        error = linalg.matrix_norm(normal_output.out[i][j] - sliced_output.out[i][j])
+        rel_err = error / linalg.matrix_norm(normal_output.out[i][j])
         out.append(rel_err)
         print(rel_err)
 
