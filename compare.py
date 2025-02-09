@@ -15,15 +15,18 @@ import sys
 normal_output = torch.load(sys.argv[1], weights_only=False)
 sliced_output = torch.load(sys.argv[2], weights_only=False)
 
-# print(normal_output.out[0].shape)
-# print(sliced_output.out[0].shape)
+print("normal: " + str(len(normal_output.out)))
+print("sliced: " + str(len(sliced_output.out)))
+
+n = min(len(normal_output.out), len(sliced_output.out))
 
 out = []
 batch = 8
-for i in range(batch):
-    error = linalg.matrix_norm(normal_output - sliced_output)
-    rel_err = error / linalg.matrix_norm(normal_output)
-    out.append(rel_err)
-    print(rel_err)
+for i in range(n):
+    for j in range(batch):
+        error = linalg.matrix_norm(normal_output[i][j] - sliced_output[i][j])
+        rel_err = error / linalg.matrix_norm(normal_output[i][j])
+        out.append(rel_err)
+        print(rel_err)
 
 torch.save(out, "out.pt")
