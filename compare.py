@@ -11,8 +11,8 @@ from evaluation_hook import ForwardHook
 
 import sys
 
-normal_output = torch.load(sys.argv[1])
-sliced_output = torch.load(sys.argv[2])
+normal_output = torch.load(sys.argv[1], weights_only=False)
+sliced_output = torch.load(sys.argv[2], weights_only=False)
 
 print(normal_output.shape)
 print(sliced_output.shape)
