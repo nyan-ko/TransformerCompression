@@ -27,7 +27,7 @@ loader = DataLoader(tokenized_dataset, batch_size=8)
 
 device = torch.device("cuda")
 
-model_adapter, _ = load_sliced_model("meta-llama/Llama-2-7b-hf", sys.argv[1], sparsity=sys.argv[2], token=sys.argv[3])
+model_adapter, _ = load_sliced_model("meta-llama/Llama-2-7b-hf", sys.argv[1], sparsity=0.25, token=sys.argv[3])
 model = model_adapter.model.to(device)
 sliced_hook = ForwardHook(model)
 model.eval()
