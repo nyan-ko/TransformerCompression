@@ -12,7 +12,7 @@ from evaluation_hook import ForwardHook
 import sys
 
 wiki = load_dataset("wikipedia", "20220301.en", split="train")
-wiki = wiki.train_test_split(test_size=0.00025, seed=42)["test"]
+wiki = wiki.train_test_split(test_size=0.000025, seed=42)["test"]
 
 tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
 tokenizer.pad_token = tokenizer.eos_token
