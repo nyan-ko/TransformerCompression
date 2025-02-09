@@ -12,7 +12,7 @@ from evaluation_hook import ForwardHook
 import sys
 
 wiki = load_dataset("wikipedia", "20220301.en", split="train")
-wiki = wiki.train_test_split(test_size=0.000025, seed=42)["test"]
+wiki = wiki.train_test_split(test_size=0.0000025, seed=42)["test"]
 
 tokenizer = LlamaTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
 tokenizer.pad_token = tokenizer.eos_token
@@ -27,8 +27,15 @@ loader = DataLoader(tokenized_dataset, batch_size=8)
 
 device = torch.device("cuda")
 
-model_adapter, _ = load_sliced_model("meta-llama/Llama-2-7b-hf", sys.argv[1], sparsity=0.25, token=sys.argv[3])
-model = model_adapter.model.to(device)
+# model_adapter, _ = load_sliced_model("meta-llama/Llama-2-7b-hf", sys.argv[1], sparsity=0.25, token=sys.argv[3])
+# model = model_adapter.model.to(device)
+
+model = llama.LlamaForCausalLM.from_pretrained(
+    "meta-llama/Llama-2-7b-hf",
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
 sliced_hook = ForwardHook(model)
 model.eval()
 
